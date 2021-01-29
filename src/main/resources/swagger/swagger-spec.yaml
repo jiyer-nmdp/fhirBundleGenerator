@@ -1,0 +1,34 @@
+swagger: '2.0'
+
+info:
+  version: "1.0"
+  title: fhir bundle converter api
+  description: Convert searchset bundle to transaction
+
+schemes:
+  - https
+  - http
+
+basePath: /v1
+
+paths:
+  /bundleConverter/convert:
+    post:
+      operationId: searchset2transaction
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: searchSet
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return the json bundle
+          schema:
+            type: string
+        "500":
+          description: ErrorException
