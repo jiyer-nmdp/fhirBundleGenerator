@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+
 @RestController
 @RequestMapping("/bundleConverter")
 @CrossOrigin
@@ -34,6 +35,7 @@ public class BundleConvertController implements BundleConverterApi {
             return new ResponseEntity<>(aPIB.getMyFhirOutput() , HttpStatus.OK);
         }
         catch (Exception e) {
+            System.out.println(e);
             return new ResponseEntity<>("Errors" , HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

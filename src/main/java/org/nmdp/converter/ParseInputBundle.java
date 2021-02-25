@@ -2,7 +2,7 @@ package org.nmdp.converter;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.dstu3.model.*;
 import org.json.*;
 
 import java.util.ArrayList;
@@ -54,15 +54,16 @@ public class ParseInputBundle
     public void extractResources(JSONArray theEntries)
     {
         List<DomainResource> aDomainResources = new ArrayList<>();
-        FhirContext ctx = FhirContext.forR4();
+        FhirContext ctx = FhirContext.forDstu3();
         IParser aParser = ctx.newJsonParser();
         BundleGenerator aBG = new BundleGenerator();
 
         for (int index = 0; index < theEntries.length(); index++)
         {
             JSONObject aEntry = theEntries.getJSONObject(index);
-            JSONObject aResource = aEntry.getJSONObject("resource");
-            aDomainResources.add(getFhirResource(aResource, aParser));
+            JSONObject aResource = (aEntry.keySet().contains("resource")) ? aEntry.getJSONObject("resource") : null;
+            DomainResource aDR = getFhirResource(aResource != null ? aResource : aEntry, aParser);
+            aDomainResources.add(aDR);
         }
 
         aBG.generateFhirBundle(aDomainResources);
@@ -87,8 +88,12 @@ public class ParseInputBundle
                 return theParser.parseResource(Provenance.class, theResource.toString());
             case "Device" :
                 return theParser.parseResource(Device.class, theResource.toString());
-            default :
-                return null;
+            case "ValueSet":
+                return theParser.parseResource(ValueSet.class, theResource.toString());
+            case "CodeSystem":
+                return theParser.parseResource(CodeSystem.class, theResource.toString());
+            default:
+                return theParser.parseResource(DomainResource.class, theResource.toString());
         }
     }
 }

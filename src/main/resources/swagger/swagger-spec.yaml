@@ -31,4 +31,27 @@ paths:
           schema:
             type: string
         "500":
-          description: ErrorException
+          description: Error / Exception
+  /getBundle:
+    get:
+      operationId: getBundle
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: patientId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: patientName
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return Fhir bundle
+          schema:
+            type: string
+        "500":
+          description: Error / Exception

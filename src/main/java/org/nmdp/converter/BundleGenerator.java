@@ -1,6 +1,6 @@
 package org.nmdp.converter;
 
-import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.dstu3.model.DomainResource;
 import org.nmdp.models.BundleResource;
 
 import java.util.List;

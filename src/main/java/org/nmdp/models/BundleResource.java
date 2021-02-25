@@ -1,7 +1,7 @@
 package org.nmdp.models;
 
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.dstu3.model.*;
+import org.hl7.fhir.dstu3.model.DomainResource;
 
 public class BundleResource {
     /**
@@ -24,16 +24,31 @@ public class BundleResource {
 
     /**
      * Add resource to the Fhir bundle and assign necessary bundle items
+     * Support added for Patient resouerce generation
      * @param theResource
      */
     public void addResource(DomainResource theResource) {
         String theFullUrl = theResource.getIdElement().getValue();
         theResource.getIdElement().setValue(null);
-        myFhirBundle.addEntry()
-                .setFullUrl(theFullUrl)
-                .setResource(theResource)
-                .getRequest()
-                .setUrl(theResource.getResourceType().toString())
-                .setMethod(Bundle.HTTPVerb.POST);
+
+        switch (theResource.getResourceType()) {
+            case Patient:
+                myFhirBundle.addEntry()
+                        .setFullUrl(theFullUrl)
+                        .setResource(theResource)
+                        .getRequest()
+                        .setUrl(theResource.getResourceType().toString())
+                        .setIfNoneExist("identifier=http://hospital.smarthealthit.org|231678")
+                        .setMethod(Bundle.HTTPVerb.POST);
+                break;
+            default:
+                myFhirBundle.addEntry()
+                        .setFullUrl(theFullUrl)
+                        .setResource(theResource)
+                        .getRequest()
+                        .setUrl(theResource.getResourceType().toString())
+                        .setMethod(Bundle.HTTPVerb.POST);
+                break;
+        }
     }
 }
