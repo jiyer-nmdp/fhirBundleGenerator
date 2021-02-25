@@ -2,8 +2,8 @@ swagger: '2.0'
 
 info:
   version: "1.0"
-  title: fhir bundle converter api
-  description: Convert searchset bundle to transaction
+  title: fhir bundle generator
+  description: Generate fhir bundles
 
 schemes:
   - https
@@ -14,7 +14,7 @@ basePath: /v1
 paths:
   /bundleConverter/convert:
     post:
-      operationId: searchset2transaction
+      operationId: bundleConverter
       consumes:
         - application/json
       produces:
