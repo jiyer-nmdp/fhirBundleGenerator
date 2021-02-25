@@ -19,40 +19,40 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.api.hml.BundleConverterApi;
-import org.json.JSONObject;
-import org.nmdp.converter.ParseInputBundle;
+import io.swagger.api.hml.GetBundleApi;
+import org.nmdp.converter.GenerateLoincBundle;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
+import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/bundleConverter")
+@RequestMapping("/getBundle")
 @CrossOrigin
-public class BundleConvertController implements BundleConverterApi {
+public class GetBundleController implements GetBundleApi {
 
-    @ApiOperation(value = "", nickname = "bundleConverter", notes = "", response = String.class, tags={  })
+    @ApiOperation(value = "", nickname = "getBundle", notes = "", response = String.class, tags={  })
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Return the json bundle", response = String.class),
+            @ApiResponse(code = 200, message = "Return Fhir bundle", response = String.class),
             @ApiResponse(code = 500, message = "Error / Exception") })
-    @RequestMapping(value = "/convert",
+    @RequestMapping(value= "",
             produces = { "application/json" },
-            consumes = { "application/json" },
-            method = RequestMethod.POST)
-    public ResponseEntity<String> bundleConverter(@ApiParam(value = "" ,required=true )  @Valid @RequestBody String searchSet) {
+            method = RequestMethod.GET)
+    public ResponseEntity<String> getBundle(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "patientId", required = true) String patientId, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "patientName", required = true) String patientName) {
         try {
-            ParseInputBundle aPIB = new ParseInputBundle();
-            aPIB.setMyInputBundle(new JSONObject(searchSet));
-            aPIB.parseInput();
-            return new ResponseEntity<>(aPIB.getMyFhirOutput() , HttpStatus.OK);
-        }
-        catch (Exception e) {
+
+            GenerateLoincBundle aGLB = new GenerateLoincBundle();
+            aGLB.setMyPatientId(patientId);
+            aGLB.setMyPatientName(patientName);
+            aGLB.createFHIR();
+            return new ResponseEntity<>(aGLB.getMyFhirOutput(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("Couldn't serialize response for content type application/json", e);
             System.out.println(e);
-            return new ResponseEntity<>("Errors" , HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

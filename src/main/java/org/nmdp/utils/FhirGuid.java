@@ -13,29 +13,15 @@
  * the specific language governing permissions and limitations under the License.
  */
 
-package org.nmdp.converter;
+package org.nmdp.utils;
 
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.nmdp.models.BundleResource;
+import org.hl7.fhir.dstu3.model.IdType;
 
-import java.util.List;
-import java.util.Objects;
-
-public class BundleGenerator {
-
-    private BundleResource myBundleResource;
-
-    public BundleResource getMyBundleResource() {
-        return myBundleResource;
-    }
-
-    public BundleGenerator() {
-        myBundleResource = new BundleResource();
-    }
-
-    public void generateFhirBundle(List<DomainResource> theResources)
-    {
-        theResources.stream().filter(Objects::nonNull)
-                .forEach(theResource -> myBundleResource.addResource(theResource));
+/**
+ * Auto generate a UUID for FHIR Id
+ */
+public class FhirGuid {
+    public static IdType genereateUrn() {
+        return IdType.newRandomUuid();
     }
 }

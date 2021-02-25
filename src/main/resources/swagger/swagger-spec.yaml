@@ -2,8 +2,8 @@ swagger: '2.0'
 
 info:
   version: "1.0"
-  title: fhir bundle converter api
-  description: Convert searchset bundle to transaction
+  title: fhir bundle generator
+  description: Generate fhir bundles
 
 schemes:
   - https
@@ -14,7 +14,7 @@ basePath: /v1
 paths:
   /bundleConverter/convert:
     post:
-      operationId: searchset2transaction
+      operationId: bundleConverter
       consumes:
         - application/json
       produces:
@@ -31,4 +31,27 @@ paths:
           schema:
             type: string
         "500":
-          description: ErrorException
+          description: Error / Exception
+  /getBundle:
+    get:
+      operationId: getBundle
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: patientId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: patientName
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Return Fhir bundle
+          schema:
+            type: string
+        "500":
+          description: Error / Exception

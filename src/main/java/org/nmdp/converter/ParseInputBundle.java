@@ -1,8 +1,23 @@
+/*
+ * Copyright (c) 2020 Be The Match operated by National Marrow Donor Program (NMDP).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+ * OR CONDITIONS OF ANY KIND, either express or implied. See the License for
+ * the specific language governing permissions and limitations under the License.
+ */
+
 package org.nmdp.converter;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.dstu3.model.*;
 import org.json.*;
 
 import java.util.ArrayList;
@@ -54,15 +69,16 @@ public class ParseInputBundle
     public void extractResources(JSONArray theEntries)
     {
         List<DomainResource> aDomainResources = new ArrayList<>();
-        FhirContext ctx = FhirContext.forR4();
+        FhirContext ctx = FhirContext.forDstu3();
         IParser aParser = ctx.newJsonParser();
         BundleGenerator aBG = new BundleGenerator();
 
         for (int index = 0; index < theEntries.length(); index++)
         {
             JSONObject aEntry = theEntries.getJSONObject(index);
-            JSONObject aResource = aEntry.getJSONObject("resource");
-            aDomainResources.add(getFhirResource(aResource, aParser));
+            JSONObject aResource = (aEntry.keySet().contains("resource")) ? aEntry.getJSONObject("resource") : null;
+            DomainResource aDR = getFhirResource(aResource != null ? aResource : aEntry, aParser);
+            aDomainResources.add(aDR);
         }
 
         aBG.generateFhirBundle(aDomainResources);
@@ -87,8 +103,12 @@ public class ParseInputBundle
                 return theParser.parseResource(Provenance.class, theResource.toString());
             case "Device" :
                 return theParser.parseResource(Device.class, theResource.toString());
-            default :
-                return null;
+            case "ValueSet":
+                return theParser.parseResource(ValueSet.class, theResource.toString());
+            case "CodeSystem":
+                return theParser.parseResource(CodeSystem.class, theResource.toString());
+            default:
+                return theParser.parseResource(DomainResource.class, theResource.toString());
         }
     }
 }
