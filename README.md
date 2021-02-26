@@ -10,13 +10,13 @@
         -   This is a POST API
         -   Accepts a JSON object (not JSON array) as input - can be a Bundle Resource or a collection of Resources
         -   Generates a FHIR transaction Bundle connecting the collection of resources
-##DevOps
+###DevOps
    - Clone the repository locally
    - Run 'mvn clean install'
    - Start the API by running 'java -jar fhirBundleGenerator-1.0-SNAPSHOT.jar'
    - Api will start on port 8090 by default
     
-##Testing 
+###Testing 
 - Only STU3 is supported right now. Support for other versions will be added soon
 
 - The LOINC codes and the respective Names are in a map-file 'loinc_desc_map.txt' in the "resources" folder
