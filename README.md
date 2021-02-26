@@ -1,9 +1,10 @@
 # fhirBundleGenerator
 - This is a Standalone set of APIs for generating Fhir transaction bundle (STU3) from other fhir bundle or collection of fhir resources
    - /getBundle - a GET Api
-        -   query parameters - patientId and patientName
+        -   query parameters - patientId, familyName and numReps
         -   patientId becomes part of the Patient resource Identifier and will be used to check for duplicate Patient resources
-        -   patientName is put in as the Patient's Family_Name. 
+        -   familyName is put in as the Patient's Family_Name
+        -   numReps determines the total number of duplicate Observations to be created per Loinc Code
         -   The given name is set to "Test" by default in the code
    - /bundleConverter/convert 
         -   This is a POST API
