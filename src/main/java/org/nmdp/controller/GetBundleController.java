@@ -40,12 +40,12 @@ public class GetBundleController implements GetBundleApi {
     @RequestMapping(value= "",
             produces = { "application/json" },
             method = RequestMethod.GET)
-    public ResponseEntity<String> getBundle(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "patientId", required = true) String patientId, @NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "patientName", required = true) String patientName) {
+    public ResponseEntity<String> getBundle(@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "patientId", required = true) Object patientId,@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "familyName", required = true) Object familyName,@NotNull @ApiParam(value = "", required = true) @Valid @RequestParam(value = "numReps", required = true) Object numReps) {
         try {
-
             GenerateLoincBundle aGLB = new GenerateLoincBundle();
-            aGLB.setMyPatientId(patientId);
-            aGLB.setMyPatientName(patientName);
+            aGLB.setMyPatientId((String)patientId);
+            aGLB.setMyPatientName((String)familyName);
+            aGLB.setMyNumReps(Integer.parseInt((String)numReps));
             aGLB.createFHIR();
             return new ResponseEntity<>(aGLB.getMyFhirOutput(), HttpStatus.OK);
 

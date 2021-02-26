@@ -44,7 +44,12 @@ paths:
           schema:
             type: string
         - in: query
-          name: patientName
+          name: familyName
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: numReps
           required: true
           schema:
             type: string

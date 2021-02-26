@@ -23,10 +23,7 @@ import org.nmdp.utils.ConfigToMap;
 import org.nmdp.utils.FhirGuid;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Loinc Based Bundle Generation Class
@@ -38,6 +35,12 @@ public class GenerateLoincBundle
     private String myPatientId;
 
     private String myPatientName;
+
+    private int myNumReps;
+
+    public void setMyNumReps(int myNumReps) {
+        this.myNumReps = myNumReps;
+    }
 
     public void setMyPatientName(String myPatientName) {
         this.myPatientName = myPatientName;
@@ -70,8 +73,11 @@ public class GenerateLoincBundle
         aDomainResources.add(aP);
         //NOTE: Following line of code can be repeated as many times
         // as needed to generate duplicate copies of each observation
-        myLoincDescMap.keySet().stream().filter(Objects::nonNull)
-                .forEach(aKey -> aDomainResources.add(getResource(aKey, myLoincDescMap.get(aKey), aP)));
+        for (int aCount=0; aCount < myNumReps; aCount++ )
+        {
+            myLoincDescMap.keySet().stream().filter(Objects::nonNull)
+                    .forEach(aKey -> aDomainResources.add(getResource(aKey, myLoincDescMap.get(aKey), aP)));
+        }
         aBG.generateFhirBundle(aDomainResources);
         FhirContext ctx = FhirContext.forDstu3();
         setMyFhirOutput(ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(aBG.getMyBundleResource().getMyFhirBundle()));
@@ -112,6 +118,11 @@ public class GenerateLoincBundle
         Reference aSubjRef = new Reference();
         aSubjRef.setReference(thePat.getIdElement().getValue());
         aObs.setSubject(aSubjRef);
+
+        // Adding Effective Date and Issued Date to Observation
+        DateTimeType aTypeDate = new DateTimeType(new Date());
+        aObs.setEffective(aTypeDate);
+        aObs.setIssued(aTypeDate.getValue());
 
         return aObs;
     }
